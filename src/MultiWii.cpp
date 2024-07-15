@@ -29,6 +29,11 @@ November  2013     V2.3
 
 #include <avr/pgmspace.h>
 
+// Variables to handle LCD update timing
+unsigned long lcdUpdateTime = 0;
+const unsigned long lcdUpdateInterval = 100; // Update interval in milliseconds
+
+
 /*********** RC alias *****************/
 
 const char pidnames[] PROGMEM =
@@ -830,6 +835,16 @@ void go_disarm() {
 
 // ******** Main Loop *********
 void loop () {
+
+    unsigned long currentMillis = millis();
+
+    if (currentMillis - lcdUpdateTime >= lcdUpdateInterval) {
+
+        lcdUpdateTime = currentMillis;
+//        Serial.println("drone");
+    }
+
+
   static uint8_t rcDelayCommand; // this indicates the number of time (multiple of RC measurement at 50Hz) the sticks must be maintained to run or switch off motors
   static uint8_t rcSticks;       // this hold sticks position for command combos
   uint8_t axis,i;
